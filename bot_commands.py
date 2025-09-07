@@ -13,7 +13,7 @@ with open("messages.json", "r", encoding="utf-8") as f:
     MSG = json.load(f)
 
 def setup(tree, bot):
-    @tree.command(name="scan", description=MSG["scan.description"])
+    @tree.command(name="masscan", description=MSG["scan.description"])
     @app_commands.describe(
         cidr=MSG["scan.describe.cidr"],
         port=MSG["scan.describe.port"],
