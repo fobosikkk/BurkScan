@@ -1,9 +1,8 @@
-import os
+
 
 DISCORD_TOKEN = ""
 MASSCAN_CMD = ["C:\\Users\\fobos\\Documents\\Coding\\masscan\\masscan-1.3.1.exe"]
 
-OUTPUT_DIR = "scans"
 DEFAULT_PORT = 25565
 DEFAULT_RATE = 1000
 PING_TIMEOUT = 2.5
@@ -11,5 +10,3 @@ PING_WORKERS = 100
 RESULTS_SHOW_LIMIT = 15
 LOG_CHANNEL_ID = 1410267653624561706
 NOTIFY_CHANNEL_ID = 1411448093613883442
-
-os.makedirs(OUTPUT_DIR, exist_ok=True)

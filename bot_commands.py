@@ -7,7 +7,7 @@ from core.scanner import scan_ip_mc
 from core.masscan import run_masscan_cidr
 from core.raw_ping import ping_server_raw
 import core.db as db
-
+from shutil import rmtree
 
 with open("messages.json", "r", encoding="utf-8") as f:
     MSG = json.load(f)
@@ -45,7 +45,7 @@ def setup(tree, bot):
         embed = Embed(title=MSG["scan.embed.finish.title"], colour=Colour.green())
         embed.add_field(name=MSG["scan.embed.finish.field_ips"], value=str(len(state.discovered)))
         await inter.followup.send(embed=embed)
-
+        rmtree(f"masscan_{guild_id}")
     @tree.command(name="scan_ip", description=MSG["scan_ip.description"])
     async def scan_ip_cmd(inter: discord.Interaction, ip: str,
                           versions: Optional[str] = None,

@@ -45,7 +45,7 @@ async def tail_results_file(bot, guild_id: int, json_path: str, port: int, NOTIF
 async def run_masscan_cidr(bot, guild_id: int, cidr: str, port: int, rate: int) -> ScanState:
     state = scan_states.setdefault(guild_id, ScanState())
     timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    out_dir = os.path.join(config.OUTPUT_DIR, f"guild_{guild_id}_{timestamp}")
+    out_dir = f"masscan_{guild_id}"
     os.makedirs(out_dir, exist_ok=True)
     json_path = os.path.join(out_dir, "results.json")
     log_path = os.path.join(out_dir, "scan.log")
@@ -55,7 +55,6 @@ async def run_masscan_cidr(bot, guild_id: int, cidr: str, port: int, rate: int) 
     state.discovered.clear()
     cmd = config.MASSCAN_CMD + [cidr, f"-p{port}", f"--rate={rate}",
         "--output-format", "json", "--output-filename", json_path, "--exclude", "255.255.255.255"]
-    print(" ".join(cmd))
     proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE,
                                                stderr=asyncio.subprocess.STDOUT)
     state.process = proc
