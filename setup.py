@@ -31,7 +31,7 @@ asyncio.run(check_token(token))
 
 masscan_dir = input("Please enter your masscan directory (ex. C:\\Users\\fobos\\Documents\\Coding\\masscan\\masscan-1.3.1.exe): ")
 
-with open("config1.py", "w", encoding="utf-8") as f:
+with open("config.py", "w", encoding="utf-8") as f:
     f.write(f'DISCORD_TOKEN = "{token}"\n')
     f.write(f'MASSCAN_CMD = ["{masscan_dir}"]\n\n')
     f.write(varss)
