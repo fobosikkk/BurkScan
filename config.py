@@ -1,8 +1,0 @@
-DISCORD_TOKEN = ""
-MASSCAN_CMD = ["C:\\Users\\fobos\\Documents\\Coding\\masscan\\masscan-1.3.1.exe"]
-
-DEFAULT_PORT = 25565
-DEFAULT_RATE = 1000
-PING_TIMEOUT = 2.5
-PING_WORKERS = 100
-RESULTS_SHOW_LIMIT = 15
