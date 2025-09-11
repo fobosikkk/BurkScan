@@ -6,7 +6,7 @@ from core.utils import extract_versions
 from core.raw_ping import ping_server_raw
 import core.db as db
 
-async def tail_results_file(bot, guild_id: int, json_path: str, port: int, NOTIFY_CHANNEL_ID: int):
+async def tail_results_file(bot, guild_id: int, json_path: str, port: int):
     state = scan_states[guild_id]
     for _ in range(100):
         if os.path.exists(json_path): break
@@ -58,7 +58,7 @@ async def run_masscan_cidr(bot, guild_id: int, cidr: str, port: int, rate: int) 
     proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE,
                                                stderr=asyncio.subprocess.STDOUT)
     state.process = proc
-    asyncio.create_task(tail_results_file(bot, guild_id, json_path, port, config.NOTIFY_CHANNEL_ID))
+    asyncio.create_task(tail_results_file(bot, guild_id, json_path, port))
     with open(log_path, "a", encoding="utf-8", buffering=1) as lf:
         lf.write(f"[start] {datetime.datetime.utcnow().isoformat()}Z | {' '.join(cmd)}\n")
         async for raw in proc.stdout:

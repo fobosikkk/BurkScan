@@ -1,3 +1,4 @@
+# scanner.py
 import asyncio, re
 from typing import Optional, Set, List, Tuple
 from core.utils import extract_versions
@@ -10,6 +11,7 @@ async def scan_ip_mc(ip: str,
     ports_range: Optional[str] = None,
     only_lan: bool = False,
     sem_limit: int = 500,
+    batch_size: int = 500,
 ) -> List[Tuple[int, bool, str, str, int, int]]:
     results: List[Tuple[int, bool, str, str, int, int]] = []
     sem = asyncio.Semaphore(sem_limit)
@@ -24,13 +26,17 @@ async def scan_ip_mc(ip: str,
     async def ping_port(port: int):
         async with sem:
             ok, version_name, motd, online, maxp = await ping_server_raw(ip, port)
-            if not ok: return
+            if not ok:
+                return
             db.save_server(ip, port, version_name, motd, online, maxp)
-            if versions_set and not (extract_versions(version_name) & versions_set): return
-            if only_online and online <= 0: return
-            if only_lan and not ((" - " in motd) and maxp == 8): return
+            if versions_set and not (extract_versions(version_name) & versions_set):
+                return
+            if only_online and online <= 0:
+                return
+            if only_lan and not ((" - " in motd) and maxp == 8):
+                return
             results.append((port, ok, version_name, motd, online, maxp))
-    for batch_start in range(start, end + 1, 2000):
-        batch_end = min(batch_start + 2000, end + 1)
+    for batch_start in range(start, end + 1, batch_size):
+        batch_end = min(batch_start + batch_size, end + 1)
         await asyncio.gather(*[ping_port(p) for p in range(batch_start, batch_end)])
     return results

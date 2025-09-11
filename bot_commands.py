@@ -146,12 +146,12 @@ def setup(tree, bot):
         embed.set_footer(text=MSG["stats.embed.footer"].format(last_seen=last_seen))
         await inter.response.send_message(embed=embed)
 
-    @tree.command(name="check_db", description=MSG["check_db.description"])
+    @tree.command(name="refresh", description=MSG["refresh.description"])
     @app_commands.describe(
-        check_inactive=MSG["check_db.describe.check_inactive"],
-        check_whitelisted=MSG["check_db.describe.check_whitelisted"],
-        timeout=MSG["check_db.describe.timeout"],
-        batch=MSG["check_db.describe.batch"]
+        check_inactive=MSG["refresh.describe.check_inactive"],
+        check_whitelisted=MSG["refresh.describe.check_whitelisted"],
+        timeout=MSG["refresh.describe.timeout"],
+        batch=MSG["refresh.describe.batch"]
     )
     async def check_db_cmd(inter: discord.Interaction,
                            check_inactive: Optional[bool] = False,
@@ -160,3 +160,70 @@ def setup(tree, bot):
                            batch: Optional[int] = 200):
         await inter.response.defer()
         await db.check_database(inter, batch_size=batch, timeout=timeout, check_inactive=check_inactive)
+
+    # bot_commands.py (добавить/заменить команду)
+    @tree.command(name="autosearch", description=MSG["autosearch.description"])
+    async def autosearch_cmd(
+            inter: discord.Interaction,
+            playit_ip: Optional[str] = "147.185.221.31",
+            playit_ports: Optional[str] = "20000-32000",
+            cidrs: Optional[str] = "95.216.0.0/15,135.125.0.0/16,51.75.0.0/16",
+            port: Optional[int] = 25565,
+            rate: Optional[int] = 5000
+    ):
+        await inter.response.defer()
+        progress_embed = discord.Embed(
+            title=MSG["autosearch.embed.start.title"],
+            description=MSG["autosearch.embed.start.desc"],
+            colour=discord.Colour.orange()
+        )
+        tmp_msg = await inter.followup.send(embed=progress_embed)
+        msg = await inter.channel.fetch_message(tmp_msg.id)
+
+        progress_embed.title = MSG["autosearch.embed.progress.title"]
+        progress_embed.description = MSG["autosearch.embed.progress.playit"].format(ip=playit_ip, ports=playit_ports)
+        await msg.edit(embed=progress_embed)
+
+        results = await scan_ip_mc(playit_ip, ports_range=playit_ports, batch_size=500)
+        await db.queue.join()
+
+        embed = discord.Embed(
+            title=MSG["autosearch.embed.playit.title"],
+            colour=discord.Colour.green()
+        )
+        for port_num, ok, version, motd, online, mx in results[:10]:
+            embed.add_field(
+                name=f"{playit_ip}:{port_num}",
+                value=MSG["scan_ip.embed.finish.field_value"].format(version=version, online=online, mx=mx,
+                                                                     motd=(motd or "")[:80]),
+                inline=False
+            )
+        if len(results) > 10:
+            embed.set_footer(text=MSG["scan_ip.embed.finish.footer"].format(total=len(results)))
+        await inter.followup.send(embed=embed)
+
+        cidr_list = [c.strip() for c in cidrs.split(",") if c.strip()]
+        total = len(cidr_list)
+        for idx, cidr in enumerate(cidr_list, 1):
+            progress_embed.description = MSG["autosearch.embed.progress.cidr"].format(idx=idx, total=total, cidr=cidr)
+            bar = "█" * int(20 * (idx / total)) + "—" * (20 - int(20 * (idx / total)))
+            progress_embed.clear_fields()
+            progress_embed.add_field(name=MSG["autosearch.embed.progress.field_bar"], value=f"[{bar}] {idx}/{total}",
+                                     inline=False)
+            await msg.edit(embed=progress_embed)
+
+            state = await run_masscan_cidr(bot, inter.guild_id, cidr, port, rate)
+            await db.queue.join()
+
+            embed = discord.Embed(
+                title=MSG["autosearch.embed.cidr.title"].format(cidr=cidr),
+                colour=discord.Colour.blue()
+            )
+            embed.add_field(name=MSG["autosearch.embed.cidr.field_ips"], value=str(len(state.discovered)))
+            await inter.followup.send(embed=embed)
+
+        progress_embed.title = MSG["autosearch.embed.finish.title"]
+        progress_embed.description = MSG["autosearch.embed.finish.desc"].format(total=total)
+        progress_embed.colour = discord.Colour.green()
+        progress_embed.clear_fields()
+        await msg.edit(embed=progress_embed)

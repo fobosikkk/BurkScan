@@ -35,7 +35,6 @@
   "ping.embed.ok.desc": "Version: {version}\nOnline: {online}/{mx}",
   "ping.embed.err.desc": "Error: {error}",
 
-
   "find.description": "Search servers in DB by filters",
   "find.describe.versions": "Comma-separated versions (e.g., 1.20,1.21)",
   "find.describe.only_online": "True — only servers with online > 0",
@@ -55,10 +54,39 @@
   "stats.embed.field_top_versions": "Top versions",
   "stats.embed.footer": "Last update: {last_seen}",
 
-  "check_db.description": "Check database",
-  "check_db.describe.check_inactive": "Also check inactive servers (might be back online)",
-  "check_db.describe.check_whitelisted": "Also recheck whitelisted servers",
-  "check_db.describe.timeout": "Timeout after which a server becomes inactive",
-  "check_db.describe.batch": "Batch size"
+  "refresh.description": "Check database",
+  "refresh.describe.check_inactive": "Also check inactive servers (might be back online)",
+  "refresh.describe.check_whitelisted": "Also recheck whitelisted servers",
+  "refresh.describe.timeout": "Timeout after which a server becomes inactive",
+  "refresh.describe.batch": "Batch size for database checks",
+  "refresh.embed.start.title": "🗄️ Database check started",
+  "refresh.embed.start.desc": "Starting database check...",
+  "refresh.embed.progress.title": "⏳ Checking active servers",
+  "refresh.embed.progress.desc": "Checked {done}/{total} servers",
+  "refresh.embed.progress.field_bar": "Progress",
+  "refresh.embed.progress.field_active": "Active",
+  "refresh.embed.progress.field_inactive": "Marked inactive",
+  "refresh.embed.inactive.title": "🔁 Rechecking inactive servers",
+  "refresh.embed.inactive.desc": "Checked {done}/{total} inactive servers",
+  "refresh.embed.inactive.field_bar": "Progress",
+  "refresh.embed.inactive.field_revived": "Revived",
+  "refresh.embed.finish.title": "✅ Database check finished",
+  "refresh.embed.finish.field_active": "Active",
+  "refresh.embed.finish.field_inactive": "Inactive",
+  "refresh.embed.finish.field_revived": "Revived",
+  "refresh.embed.finish.field_deleted": "Deleted old records",
+
+  "autosearch.description": "Auto-scan playit.gg and common CIDRs",
+  "autosearch.embed.start.title": "🚀 Auto scan started",
+  "autosearch.embed.start.desc": "Starting tasks...",
+  "autosearch.embed.progress.title": "⏳ Auto scan in progress",
+  "autosearch.embed.progress.playit": "Scanning {ip}:{ports}...",
+  "autosearch.embed.progress.cidr": "Scanning CIDR {idx}/{total}: {cidr}",
+  "autosearch.embed.progress.field_bar": "Progress",
+  "autosearch.embed.finish.title": "✅ Auto scan finished",
+  "autosearch.embed.finish.desc": "Completed {total} CIDRs.",
+  "autosearch.embed.playit.title": "🎯 playit.gg scan results",
+  "autosearch.embed.cidr.title": "📡 Scan finished: {cidr}",
+  "autosearch.embed.cidr.field_ips": "IPs found"
 
 }

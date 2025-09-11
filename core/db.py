@@ -219,12 +219,12 @@ async def check_database(inter: discord.Interaction,
             percent = done / total_inactive if total_inactive else 1
             bar = "█" * int(20*percent) + "—" * (20-int(20*percent))
             embed = discord.Embed(
-                title=MSG["check_db.embed.inactive.title"],
-                description=MSG["check_db.embed.inactive.desc"].format(done=done, total=total_inactive),
+                title=MSG["refresh.embed.inactive.title"],
+                description=MSG["refresh.embed.inactive.desc"].format(done=done, total=total_inactive),
                 colour=discord.Colour.dark_grey()
             )
-            embed.add_field(name=MSG["check_db.embed.inactive.field_bar"], value=f"[{bar}] {percent:.0%}", inline=False)
-            embed.add_field(name=MSG["check_db.embed.inactive.field_revived"], value=str(revived_count), inline=True)
+            embed.add_field(name=MSG["refresh.embed.inactive.field_bar"], value=f"[{bar}] {percent:.0%}", inline=False)
+            embed.add_field(name=MSG["refresh.embed.inactive.field_revived"], value=str(revived_count), inline=True)
             await msg.edit(embed=embed)
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -235,10 +235,10 @@ async def check_database(inter: discord.Interaction,
     deleted_count = cur.rowcount
     conn.commit()
     conn.close()
-    embed = discord.Embed(title=MSG["check_db.embed.finish.title"], colour=discord.Colour.green())
-    embed.add_field(name=MSG["check_db.embed.finish.field_active"], value=str(ok_count), inline=True)
-    embed.add_field(name=MSG["check_db.embed.finish.field_inactive"], value=str(inactive_count), inline=True)
-    embed.add_field(name=MSG["check_db.embed.finish.field_revived"], value=str(revived_count), inline=True)
-    embed.add_field(name=MSG["check_db.embed.finish.field_deleted"], value=str(deleted_count), inline=True)
+    embed = discord.Embed(title=MSG["refresh.embed.finish.title"], colour=discord.Colour.green())
+    embed.add_field(name=MSG["refresh.embed.finish.field_active"], value=str(ok_count), inline=True)
+    embed.add_field(name=MSG["refresh.embed.finish.field_inactive"], value=str(inactive_count), inline=True)
+    embed.add_field(name=MSG["refresh.embed.finish.field_revived"], value=str(revived_count), inline=True)
+    embed.add_field(name=MSG["refresh.embed.finish.field_deleted"], value=str(deleted_count), inline=True)
     await msg.edit(embed=embed)
     return ok_count, inactive_count, revived_count, deleted_count
